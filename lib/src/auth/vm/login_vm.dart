@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/login_model.dart';
-
+import '../services/auth_services.dart'; // Ensure you import AuthServices
 
 part 'login_vm.g.dart';
 
 @riverpod
 class LoginViewModel extends _$LoginViewModel {
+  // Create an instance of AuthServices
+  final AuthServices authService = AuthServices();
+
   @override
   LoginState build() {
     return LoginState();
@@ -16,18 +19,6 @@ class LoginViewModel extends _$LoginViewModel {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-/*  void setPassword(String value) {
-    state = state.copyWith(
-      passwordError: validatePassword(value),
-    );
-  }
-
-  void setEmail(String value) {
-    state = state.copyWith(
-      emailError: validateEmail(value),
-    );
-  }*/
 
   String? validateEmail(String? value) {
     const emailPattern = r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+';
@@ -53,20 +44,19 @@ class LoginViewModel extends _$LoginViewModel {
 
   Future<void> login() async {
     if (formKey.currentState?.validate() ?? false) {
-      // Form is valid; simulate a successful login action here
-  /*    state = state.copyWith(
-        emailError: null,
-        passwordError: null,
-        errorMessage: null,
-      );*/
-      print("Login successful");
+      try {
+        // Use the email and password from the controllers
+        final response = await authService.login(
+          emailController.text,
+          passwordController.text,
+          'teacher', // Assuming the role is teacher
+        );
+
+        print("Login successful: ${response.data}");
+      } catch (e) {
+        print("Login failed: $e");
+      }
     } else {
-      // Form is invalid; update state to show errors
-     /* state = state.copyWith(
-        emailError: validateEmail(emailController.text),
-        passwordError: validatePassword(passwordController.text),
-        errorMessage: "Please fill in all fields correctly",
-      );*/
       print("Login failed. One or more fields are invalid.");
     }
   }

@@ -142,7 +142,7 @@ class LoginView extends ConsumerWidget {
                         ),
                         SizedBox(height: 30.h),
                         PrimaryButton(
-                          onPressed: () async => await vm.login(),
+                          onPressed: ()  =>  vm.login(),
                           label: 'Login',
                         ),
                         SizedBox(height: 40.h),
